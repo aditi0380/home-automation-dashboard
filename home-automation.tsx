@@ -7,7 +7,6 @@ import { Switch } from "@/components/ui/switch"
 import { Slider } from "@/components/ui/slider"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 
 export default function HomeAutomation() {
   // State for lights
@@ -34,6 +33,31 @@ export default function HomeAutomation() {
   const toggleDarkMode = () => {
     setIsDarkMode(!isDarkMode)
     document.documentElement.classList.toggle("dark")
+  }
+
+  // 1. First, let's add a function to check if all devices are off
+  // Add this function after the toggleDarkMode function and before the return statement
+
+  const areAllDevicesOff = () => {
+    return !livingRoomLight && !kitchenLight && !bedroomLight && !acPower && !ceilingFan
+  }
+
+  const toggleAllDevices = () => {
+    if (areAllDevicesOff()) {
+      // Turn all on
+      setLivingRoomLight(true)
+      setKitchenLight(true)
+      setBedroomLight(true)
+      setAcPower(true)
+      setCeilingFan(true)
+    } else {
+      // Turn all off
+      setLivingRoomLight(false)
+      setKitchenLight(false)
+      setBedroomLight(false)
+      setAcPower(false)
+      setCeilingFan(false)
+    }
   }
 
   return (
@@ -101,18 +125,8 @@ export default function HomeAutomation() {
                   </div>
                 </CardContent>
                 <CardFooter>
-                  <Button
-                    variant="outline"
-                    className="w-full"
-                    onClick={() => {
-                      setLivingRoomLight(false)
-                      setKitchenLight(false)
-                      setBedroomLight(false)
-                      setAcPower(false)
-                      setCeilingFan(false)
-                    }}
-                  >
-                    Turn All Off
+                  <Button variant="outline" className="w-full" onClick={toggleAllDevices}>
+                    {areAllDevicesOff() ? "Turn All On" : "Turn All Off"}
                   </Button>
                 </CardFooter>
               </Card>
@@ -145,12 +159,18 @@ export default function HomeAutomation() {
                     variant="outline"
                     className="w-full"
                     onClick={() => {
-                      setLivingRoomLight(false)
-                      setKitchenLight(false)
-                      setBedroomLight(false)
+                      if (!livingRoomLight && !kitchenLight && !bedroomLight) {
+                        setLivingRoomLight(true)
+                        setKitchenLight(true)
+                        setBedroomLight(true)
+                      } else {
+                        setLivingRoomLight(false)
+                        setKitchenLight(false)
+                        setBedroomLight(false)
+                      }
                     }}
                   >
-                    Turn All Off
+                    {!livingRoomLight && !kitchenLight && !bedroomLight ? "Turn All Lights On" : "Turn All Lights Off"}
                   </Button>
                 </CardFooter>
               </Card>
@@ -273,20 +293,7 @@ export default function HomeAutomation() {
                     </div>
                   </div>
                 </CardContent>
-                <CardFooter>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="outline" disabled={!ceilingFan}>
-                        Fan Options
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                      <DropdownMenuItem onClick={() => setCeilingFanSpeed([1])}>Quiet Mode</DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => setCeilingFanSpeed([3])}>Normal Mode</DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => setCeilingFanSpeed([5])}>Turbo Mode</DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </CardFooter>
+                <CardFooter>{/* Fan footer content removed as requested */}</CardFooter>
               </Card>
             </div>
           </TabsContent>
@@ -457,20 +464,7 @@ export default function HomeAutomation() {
                     </div>
                   </div>
                 </CardContent>
-                <CardFooter>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="outline" className="w-full" disabled={!ceilingFan}>
-                        Fan Presets
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                      <DropdownMenuItem onClick={() => setCeilingFanSpeed([1])}>Sleep Mode</DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => setCeilingFanSpeed([3])}>Normal Mode</DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => setCeilingFanSpeed([5])}>Cooling Mode</DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </CardFooter>
+                <CardFooter>{/* Fan footer content removed as requested */}</CardFooter>
               </Card>
             </div>
           </TabsContent>
@@ -479,4 +473,3 @@ export default function HomeAutomation() {
     </div>
   )
 }
-
